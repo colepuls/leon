@@ -1,6 +1,5 @@
-
-
 #include "controller.h"
+#include <Bluepad32.h>
 
 ControllerPtr controller;
 
@@ -26,13 +25,39 @@ void updateController() {
         if (controller->a()) {
             Serial.println("A pressed.");
             setAngle(channels[0], 180);
-            delay(1000);
+            delay(500);
         }
 
         if (controller->b()) {
             Serial.println("B pressed.");
             setAngle(channels[0], 90);
-            delay(1000);
+            delay(500);
+        }
+
+        if (controller->x()) {
+            Serial.println("X pressed.");
+            setAngle(channels[1], 0);
+            delay(500);
+        }
+
+        if (controller->y()) {
+            Serial.println("Y pressed.");
+            setAngle(channels[1], 90);
+            delay(500);
+        }
+
+        if (controller->r2()) {
+            Serial.println("R2 pressed.");
+            setAngle(channels[0], 180);
+            setAngle(channels[1], 0);
+            delay(500);
+        }
+
+        if (controller->l2()) {
+            Serial.println("L2 pressed.");
+            setAngle(channels[0], 90);
+            setAngle(channels[1], 90);
+            delay(500);
         }
     }
 
