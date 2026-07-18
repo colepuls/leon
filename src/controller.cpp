@@ -18,46 +18,20 @@ void setupController() {
 }
 
 void updateController() {
+    Leg frontLeftLeg;
+    frontLeftLeg = mapLeg(frontLeftLeg, 95, 90, 160, 20, 0, 1);
+                                //    lCr, rCr, lEx, rEx
+
     BP32.update();
 
     if (controller && controller->isConnected()) {
 
-        if (controller->a()) {
-            Serial.println("A pressed.");
-            setAngle(channels[0], 180);
-            delay(500);
-        }
-
-        if (controller->b()) {
-            Serial.println("B pressed.");
-            setAngle(channels[0], 90);
-            delay(500);
-        }
-
-        if (controller->x()) {
-            Serial.println("X pressed.");
-            setAngle(channels[1], 0);
-            delay(500);
-        }
-
-        if (controller->y()) {
-            Serial.println("Y pressed.");
-            setAngle(channels[1], 90);
-            delay(500);
-        }
-
         if (controller->r2()) {
-            Serial.println("R2 pressed.");
-            setAngle(channels[0], 180);
-            setAngle(channels[1], 0);
-            delay(500);
+            extendLeg(frontLeftLeg);
         }
 
         if (controller->l2()) {
-            Serial.println("L2 pressed.");
-            setAngle(channels[0], 90);
-            setAngle(channels[1], 90);
-            delay(500);
+            crouchLeg(frontLeftLeg);
         }
     }
 
