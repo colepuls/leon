@@ -1,6 +1,6 @@
 #include "movement.h"
 
-Leg mapLeg(Leg leg, float leftJointCrouchPos, float rightJointCrouchPos, float leftJointExtendPos, float rightJointExtendPos, u8 leftJointChannel, u8 rightJointChannel) {
+Leg mapLeg(Leg leg, float leftJointCrouchPos, float rightJointCrouchPos, float leftJointExtendPos, float rightJointExtendPos, u8 leftJointChannel, u8 rightJointChannel, float hipJointVerticalPos, float hipJointHorizontalPos, u8 hipJointChannel) {
     // crouch pos
     leg.leftJoint.crouchPos = leftJointCrouchPos;
     leg.rightJoint.crouchPos = rightJointCrouchPos;
@@ -9,9 +9,14 @@ Leg mapLeg(Leg leg, float leftJointCrouchPos, float rightJointCrouchPos, float l
     leg.leftJoint.extendPos = leftJointExtendPos;
     leg.rightJoint.extendPos = rightJointExtendPos;
 
+    // hip pos
+    leg.hipJoint.verticalPos = hipJointVerticalPos;
+    leg.hipJoint.horizontalPos = hipJointHorizontalPos;
+
     // set channels
     leg.leftJoint.channel = leftJointChannel;
     leg.rightJoint.channel = rightJointChannel;
+    leg.hipJoint.channel = hipJointChannel;
 
     return leg;
 }
@@ -28,8 +33,12 @@ void extendLeg(Leg leg) {
     delay(100);
 }
 
-void moveLegLeft(Leg leg) {
-    // would need to add more positions to Leg object
+void tuckLeg(Leg leg) {
+    setAngle(leg.hipJoint.channel, leg.hipJoint.horizontalPos);
+    delay(100);
 }
 
-// to do: clean code base
+void untuckLeg(Leg leg) {
+    setAngle(leg.hipJoint.channel, leg.hipJoint.verticalPos);
+    delay(100);
+}

@@ -19,8 +19,22 @@ void setupController() {
 
 void updateController() {
     Leg frontLeftLeg;
-    frontLeftLeg = mapLeg(frontLeftLeg, 95, 90, 160, 20, 0, 1);
-                                //    lCr, rCr, lEx, rEx
+
+    float leftCrouchPos = 95.0;
+    float rightCrouchPos = 90.0;
+
+    float leftExtendPos = 160.0;
+    float rightExtendPos = 20.0;
+
+    float hipVerticalPos = 45.0;
+    float hipHorizontalPos = 80.0;
+
+    u8 leftChannel = 0;
+    u8 rightChannel = 1;
+    u8 hipChannel = 2;
+
+
+    frontLeftLeg = mapLeg(frontLeftLeg, leftCrouchPos, rightCrouchPos, leftExtendPos, rightExtendPos, leftChannel, rightChannel, hipVerticalPos, hipHorizontalPos, hipChannel);
 
     BP32.update();
 
@@ -32,6 +46,14 @@ void updateController() {
 
         if (controller->l2()) {
             crouchLeg(frontLeftLeg);
+        }
+
+        if (controller->r1()) {
+            untuckLeg(frontLeftLeg);
+        }
+
+        if (controller->l1()) {
+            tuckLeg(frontLeftLeg);
         }
     }
 
