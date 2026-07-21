@@ -4,4 +4,4 @@
 void connectController(ControllerPtr ctrl);
 void disconnectController(ControllerPtr ctrl);
 void setupController();
-void updateController();
+void updateController(Leg fL_leg);

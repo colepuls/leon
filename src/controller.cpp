@@ -17,43 +17,34 @@ void setupController() {
     BP32.setup(&connectController, &disconnectController);
 }
 
-void updateController() {
-    Leg frontLeftLeg;
-
-    float leftCrouchPos = 95.0;
-    float rightCrouchPos = 90.0;
-
-    float leftExtendPos = 160.0;
-    float rightExtendPos = 20.0;
-
-    float hipVerticalPos = 45.0;
-    float hipHorizontalPos = 80.0;
-
-    u8 leftChannel = 0;
-    u8 rightChannel = 1;
-    u8 hipChannel = 2;
-
-
-    frontLeftLeg = mapLeg(frontLeftLeg, leftCrouchPos, rightCrouchPos, leftExtendPos, rightExtendPos, leftChannel, rightChannel, hipVerticalPos, hipHorizontalPos, hipChannel);
+void updateController(Leg fL_leg) {
 
     BP32.update();
 
     if (controller && controller->isConnected()) {
 
         if (controller->r2()) {
-            extendLeg(frontLeftLeg);
+            extendLeg(fL_leg);
         }
 
         if (controller->l2()) {
-            crouchLeg(frontLeftLeg);
+            crouchLeg(fL_leg);
         }
 
         if (controller->r1()) {
-            untuckLeg(frontLeftLeg);
+            untuckLeg(fL_leg);
         }
 
         if (controller->l1()) {
-            tuckLeg(frontLeftLeg);
+            tuckLeg(fL_leg);
+        }
+
+        if (controller->a()) {
+            walkCrouched(fL_leg);
+        }
+
+        if (controller->b()) {
+            walkExtended(fL_leg);
         }
     }
 

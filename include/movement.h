@@ -20,3 +20,5 @@ void crouchLeg(Leg leg);
 void extendLeg(Leg leg);
 void tuckLeg(Leg leg);
 void untuckLeg(Leg leg);
+void walkCrouched(Leg leg);
+void walkExtended(Leg leg);

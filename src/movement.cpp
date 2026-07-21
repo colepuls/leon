@@ -42,3 +42,37 @@ void untuckLeg(Leg leg) {
     setAngle(leg.hipJoint.channel, leg.hipJoint.verticalPos);
     delay(100);
 }
+
+void walkCrouched(Leg leg) {
+    // pos 1
+    setAngle(leg.leftJoint.channel, leg.leftJoint.crouchPos);
+    setAngle(leg.rightJoint.channel, leg.rightJoint.extendPos);
+    delay(200);
+
+    // pos 2
+    setAngle(leg.leftJoint.channel, leg.leftJoint.extendPos);
+    setAngle(leg.rightJoint.channel, leg.rightJoint.crouchPos);
+    delay(200);
+
+    // pos 3
+    setAngle(leg.leftJoint.channel, leg.leftJoint.crouchPos);
+    setAngle(leg.rightJoint.channel, leg.rightJoint.crouchPos);
+    delay(200);
+}
+
+void walkExtended(Leg leg) {
+    // pos 1
+    setAngle(leg.leftJoint.channel, leg.leftJoint.extendPos);
+    setAngle(leg.rightJoint.channel, leg.rightJoint.crouchPos);
+    delay(200);
+
+    // pos 2
+    setAngle(leg.leftJoint.channel, leg.leftJoint.crouchPos);
+    setAngle(leg.rightJoint.channel, leg.rightJoint.extendPos);
+    delay(200);
+
+    // pos 3
+    setAngle(leg.leftJoint.channel, leg.leftJoint.extendPos);
+    setAngle(leg.rightJoint.channel, leg.rightJoint.extendPos);
+    delay(200);
+}
