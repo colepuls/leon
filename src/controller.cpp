@@ -23,28 +23,12 @@ void updateController(Leg fL_leg) {
 
     if (controller && controller->isConnected()) {
 
-        if (controller->r2()) {
-            extendLeg(fL_leg);
-        }
-
-        if (controller->l2()) {
-            crouchLeg(fL_leg);
-        }
-
-        if (controller->r1()) {
-            untuckLeg(fL_leg);
-        }
-
-        if (controller->l1()) {
-            tuckLeg(fL_leg);
-        }
-
         if (controller->a()) {
-            walkCrouched(fL_leg);
+            moveLegToPos(fL_leg, 0.0, 27.5);
         }
 
         if (controller->b()) {
-            walkExtended(fL_leg);
+            moveLegToPos(fL_leg, 0.0, 50.0);
         }
     }
 

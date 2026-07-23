@@ -1,78 +1,63 @@
 #include "movement.h"
 
-Leg mapLeg(Leg leg, float leftJointCrouchPos, float rightJointCrouchPos, float leftJointExtendPos, float rightJointExtendPos, u8 leftJointChannel, u8 rightJointChannel, float hipJointVerticalPos, float hipJointHorizontalPos, u8 hipJointChannel) {
-    // crouch pos
-    leg.leftJoint.crouchPos = leftJointCrouchPos;
-    leg.rightJoint.crouchPos = rightJointCrouchPos;
+Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, u8 leftJointDirection, u8 rightJointDirection, u8 leftJointChannel, u8 rightJointChannel, float motorSpacing, float upperLink, float lowerLink) {
+    // offsetPos
+    leg.leftJoint.offsetPos = leftJointOffsetPos;
+    leg.rightJoint.offsetPos = rightJointOffsetPos;
 
-    // extend pos
-    leg.leftJoint.extendPos = leftJointExtendPos;
-    leg.rightJoint.extendPos = rightJointExtendPos;
+    // direction
+    leg.leftJoint.direction = leftJointDirection;
+    leg.rightJoint.direction = rightJointDirection;
 
-    // hip pos
-    leg.hipJoint.verticalPos = hipJointVerticalPos;
-    leg.hipJoint.horizontalPos = hipJointHorizontalPos;
-
-    // set channels
+    // channel
     leg.leftJoint.channel = leftJointChannel;
     leg.rightJoint.channel = rightJointChannel;
-    leg.hipJoint.channel = hipJointChannel;
+
+    // coordinate values
+    leg.motorSpacing = motorSpacing;
+    leg.upperLink = upperLink;
+    leg.lowerLink = lowerLink;
 
     return leg;
 }
 
-void crouchLeg(Leg leg) {
-    setAngle(leg.leftJoint.channel, leg.leftJoint.crouchPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.crouchPos);
-    delay(100);
+float getAngle(Leg leg, float x, float y) {
+    float leftJointX = -leg.motorSpacing / 2;
+    float rightJointX = leg.motorSpacing / 2;
+    float leftJointY = 0;
+    float rightJointY = 0;
+
+    float leftX = x - leftJointX;
+    float rightX = x - rightJointX;
+    float leftY = y - leftJointY;
+    float rightY = y - rightJointY;
+
+    float leftDistance = sqrtf((leftX * leftX) + (leftY * leftY));
+    float rightDistance = sqrtf((rightX * rightX) + (rightY * rightY));
+
+    float leftOutsideAngle = atan2f(leftY, leftX);
+    float rightOutsideAngle = atan2f(rightY, rightX);
+
+    float leftInsideAngle = acosf(((leg.upperLink * leg.upperLink) + (leftDistance * leftDistance) - (leg.lowerLink * leg.lowerLink)) / (2 * leg.upperLink * leftDistance));
+    float rightInsideAngle = acosf(((leg.upperLink * leg.upperLink) + (rightDistance * rightDistance) - (leg.lowerLink * leg.lowerLink)) / (2 * leg.upperLink * rightDistance));
+
+    float leftAngleRadians = leftOutsideAngle - leftInsideAngle;
+    float rightAngleRadians = rightOutsideAngle + rightInsideAngle;
+
+    // radians -> degrees
+    float leftAngleDegrees = leftAngleRadians * 180.0 / PI;
+    float rightAngleDegrees = rightAngleRadians * 180.0 / PI;
+
+    // raw degrees -> servo acceptable degrees
+    float leftServoAngle = leg.leftJoint.offsetPos + leg.leftJoint.direction * leftAngleDegrees;
+    float rightServoAngle = leg.rightJoint.offsetPos + leg.rightJoint.direction * rightAngleDegrees;
+
+    return leftServoAngle, rightServoAngle;
 }
 
-void extendLeg(Leg leg) {
-    setAngle(leg.leftJoint.channel, leg.leftJoint.extendPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.extendPos);
-    delay(100);
-}
-
-void tuckLeg(Leg leg) {
-    setAngle(leg.hipJoint.channel, leg.hipJoint.horizontalPos);
-    delay(100);
-}
-
-void untuckLeg(Leg leg) {
-    setAngle(leg.hipJoint.channel, leg.hipJoint.verticalPos);
-    delay(100);
-}
-
-void walkCrouched(Leg leg) {
-    // pos 1
-    setAngle(leg.leftJoint.channel, leg.leftJoint.crouchPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.extendPos);
-    delay(200);
-
-    // pos 2
-    setAngle(leg.leftJoint.channel, leg.leftJoint.extendPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.crouchPos);
-    delay(200);
-
-    // pos 3
-    setAngle(leg.leftJoint.channel, leg.leftJoint.crouchPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.crouchPos);
-    delay(200);
-}
-
-void walkExtended(Leg leg) {
-    // pos 1
-    setAngle(leg.leftJoint.channel, leg.leftJoint.extendPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.crouchPos);
-    delay(200);
-
-    // pos 2
-    setAngle(leg.leftJoint.channel, leg.leftJoint.crouchPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.extendPos);
-    delay(200);
-
-    // pos 3
-    setAngle(leg.leftJoint.channel, leg.leftJoint.extendPos);
-    setAngle(leg.rightJoint.channel, leg.rightJoint.extendPos);
+void moveLegToPos(Leg leg, float x, float y) {
+    float leftServoAngle, rightServoAngle = getAngle(leg, x, y);
+    setAngle(leg.leftJoint.channel, leftServoAngle);
+    setAngle(leg.rightJoint.channel, rightServoAngle);
     delay(200);
 }
