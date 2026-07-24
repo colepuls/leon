@@ -24,49 +24,67 @@ Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, 
 float* getAngles(Leg leg, float x, float y) {
     x = -x; // flip axis
 
-    float leftJointX = -leg.motorSpacing / 2;
-    float rightJointX = leg.motorSpacing / 2;
-    float leftJointY = 0;
-    float rightJointY = 0;
+    // define limits
+    float leftLimit = sqrtf(((x + (leg.motorSpacing / 2)) * (x + (leg.motorSpacing / 2))) + (y * y));
+    float rightLimit = sqrtf(((x - (leg.motorSpacing / 2)) * (x - (leg.motorSpacing / 2))) + (y * y));
 
-    float leftX = x - leftJointX;
-    float rightX = x - rightJointX;
-    float leftY = y - leftJointY;
-    float rightY = y - rightJointY;
+    if ((fabsf(leg.lowerLink - leg.upperLink) <= leftLimit && leftLimit <= leg.upperLink + leg.lowerLink) && (fabsf(leg.lowerLink - leg.upperLink) <= rightLimit && rightLimit <= leg.upperLink + leg.lowerLink)) {
+        float leftJointX = -leg.motorSpacing / 2;
+        float rightJointX = leg.motorSpacing / 2;
+        float leftJointY = 0;
+        float rightJointY = 0;
 
-    float leftDistance = sqrtf((leftX * leftX) + (leftY * leftY));
-    float rightDistance = sqrtf((rightX * rightX) + (rightY * rightY));
+        float leftX = x - leftJointX;
+        float rightX = x - rightJointX;
+        float leftY = y - leftJointY;
+        float rightY = y - rightJointY;
 
-    float leftOutsideAngle = atan2f(leftY, leftX);
-    float rightOutsideAngle = atan2f(rightY, rightX);
+        float leftDistance = sqrtf((leftX * leftX) + (leftY * leftY));
+        float rightDistance = sqrtf((rightX * rightX) + (rightY * rightY));
 
-    float leftInsideAngle = acosf(((leg.upperLink * leg.upperLink) + (leftDistance * leftDistance) - (leg.lowerLink * leg.lowerLink)) / (2 * leg.upperLink * leftDistance));
-    float rightInsideAngle = acosf(((leg.upperLink * leg.upperLink) + (rightDistance * rightDistance) - (leg.lowerLink * leg.lowerLink)) / (2 * leg.upperLink * rightDistance));
+        float leftOutsideAngle = atan2f(leftY, leftX);
+        float rightOutsideAngle = atan2f(rightY, rightX);
 
-    float leftAngleRadians = leftOutsideAngle - leftInsideAngle;
-    float rightAngleRadians = rightOutsideAngle + rightInsideAngle;
+        float leftInsideAngle = acosf(((leg.upperLink * leg.upperLink) + (leftDistance * leftDistance) - (leg.lowerLink * leg.lowerLink)) / (2 * leg.upperLink * leftDistance));
+        float rightInsideAngle = acosf(((leg.upperLink * leg.upperLink) + (rightDistance * rightDistance) - (leg.lowerLink * leg.lowerLink)) / (2 * leg.upperLink * rightDistance));
 
-    // radians -> degrees
-    float leftAngleDegrees = leftAngleRadians * 180.0 / PI;
-    float rightAngleDegrees = (rightAngleRadians * 180.0 / PI) - 180.0;
+        float leftAngleRadians = leftOutsideAngle - leftInsideAngle;
+        float rightAngleRadians = rightOutsideAngle + rightInsideAngle;
 
-    // raw degrees -> servo acceptable degrees
-    float leftServoAngle = leg.leftJoint.offsetPos + leg.leftJoint.direction * leftAngleDegrees;
-    float rightServoAngle = leg.rightJoint.offsetPos + leg.rightJoint.direction * rightAngleDegrees;
+        // radians -> degrees
+        float leftAngleDegrees = leftAngleRadians * 180.0 / PI;
+        float rightAngleDegrees = (rightAngleRadians * 180.0 / PI) - 180.0;
 
-    // store angles for return
-    float* angles = (float*)malloc(sizeof(float) * 2);
-    angles[0] = leftServoAngle;
-    angles[1] = rightServoAngle;
+        // raw degrees -> servo acceptable degrees
+        float leftServoAngle = leg.leftJoint.offsetPos + leg.leftJoint.direction * leftAngleDegrees;
+        float rightServoAngle = leg.rightJoint.offsetPos + leg.rightJoint.direction * rightAngleDegrees;
 
-    return angles;
+        // store angles for return
+        float* angles = (float*)malloc(sizeof(float) * 2);
+        angles[0] = leftServoAngle;
+        angles[1] = rightServoAngle;
+
+        return angles;
+    }
+    else {
+        Serial.println("ERROR: Cannot reach position.");
+        return (float*)NULL;
+    }
 }
 
 void moveLegToPos(Leg leg, float x, float y) {
     float* angles = getAngles(leg, x, y);
+
+    if (angles == NULL) {
+        delay(200);
+        return;
+    }
+
     setAngle(leg.leftJoint.channel, angles[0]);
     setAngle(leg.rightJoint.channel, angles[1]);
     delay(200);
+
+    free(angles);
 }
 
 void resetLeg(Leg leg) {
