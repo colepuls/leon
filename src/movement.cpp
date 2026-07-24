@@ -1,6 +1,6 @@
 #include "movement.h"
 
-Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, u8 leftJointDirection, u8 rightJointDirection, u8 leftJointChannel, u8 rightJointChannel, float motorSpacing, float upperLink, float lowerLink) {
+Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, int leftJointDirection, int rightJointDirection, u8 leftJointChannel, u8 rightJointChannel, float motorSpacing, float upperLink, float lowerLink) {
     // offsetPos
     leg.leftJoint.offsetPos = leftJointOffsetPos;
     leg.rightJoint.offsetPos = rightJointOffsetPos;
@@ -21,7 +21,9 @@ Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, 
     return leg;
 }
 
-float getAngle(Leg leg, float x, float y) {
+float* getAngles(Leg leg, float x, float y) {
+    x = -x; // flip axis
+
     float leftJointX = -leg.motorSpacing / 2;
     float rightJointX = leg.motorSpacing / 2;
     float leftJointY = 0;
@@ -46,18 +48,29 @@ float getAngle(Leg leg, float x, float y) {
 
     // radians -> degrees
     float leftAngleDegrees = leftAngleRadians * 180.0 / PI;
-    float rightAngleDegrees = rightAngleRadians * 180.0 / PI;
+    float rightAngleDegrees = (rightAngleRadians * 180.0 / PI) - 180.0;
 
     // raw degrees -> servo acceptable degrees
     float leftServoAngle = leg.leftJoint.offsetPos + leg.leftJoint.direction * leftAngleDegrees;
     float rightServoAngle = leg.rightJoint.offsetPos + leg.rightJoint.direction * rightAngleDegrees;
 
-    return leftServoAngle, rightServoAngle;
+    // store angles for return
+    float* angles = (float*)malloc(sizeof(float) * 2);
+    angles[0] = leftServoAngle;
+    angles[1] = rightServoAngle;
+
+    return angles;
 }
 
 void moveLegToPos(Leg leg, float x, float y) {
-    float leftServoAngle, rightServoAngle = getAngle(leg, x, y);
-    setAngle(leg.leftJoint.channel, leftServoAngle);
-    setAngle(leg.rightJoint.channel, rightServoAngle);
+    float* angles = getAngles(leg, x, y);
+    setAngle(leg.leftJoint.channel, angles[0]);
+    setAngle(leg.rightJoint.channel, angles[1]);
+    delay(200);
+}
+
+void resetLeg(Leg leg) {
+    setAngle(leg.leftJoint.channel, leg.leftJoint.offsetPos);
+    setAngle(leg.rightJoint.channel, leg.rightJoint.offsetPos);
     delay(200);
 }

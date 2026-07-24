@@ -6,12 +6,12 @@ Leg frontLeftLeg;
 static const float leftJointOffsetPos = 100.0;
 static const float rightJointOffsetPos = 90.0;
 
-static const float motorSpacing = 55.0;
-static const float upperLink = 55.0;
-static const float lowerLink = 110.0;
+static const float motorSpacing = 60.0;
+static const float upperLink = 60.0;
+static const float lowerLink = 120.0;
 
-static const u8 leftJointDirection = 1;
-static const u8 rightJointDirection = -1;
+static const int leftJointDirection = 1;
+static const int rightJointDirection = 1;
 
 static const u8 leftJointChannel = 0;
 static const u8 rightJointChannel = 1;

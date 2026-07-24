@@ -24,11 +24,15 @@ void updateController(Leg fL_leg) {
     if (controller && controller->isConnected()) {
 
         if (controller->a()) {
-            moveLegToPos(fL_leg, 0.0, 27.5);
+            moveLegToPos(fL_leg, -30.0, 140.0);
         }
 
         if (controller->b()) {
-            moveLegToPos(fL_leg, 0.0, 50.0);
+            moveLegToPos(fL_leg, 30.0, 140.0);
+        }
+
+        if (controller->y()) {
+            resetLeg(fL_leg);
         }
     }
 
