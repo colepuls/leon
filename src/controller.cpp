@@ -24,11 +24,11 @@ void updateController(Leg fL_leg) {
     if (controller && controller->isConnected()) {
 
         if (controller->a()) {
-            moveLegToPos(fL_leg, -87.5f, 150.0f);
+            triangleGait(fL_leg, 60.0f, 80.0f, 140.0f);
         }
 
         if (controller->b()) {
-            moveLegToPos(fL_leg, 100.5f, 130.0f);
+            triangleGait(fL_leg, 80.0f, 80.0f, 160.0f);
         }
 
         if (controller->y()) {
@@ -40,7 +40,7 @@ void updateController(Leg fL_leg) {
         }
     }
 
-    delay(20);
+    delay(10);
 }
 
 

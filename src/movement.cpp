@@ -82,7 +82,7 @@ void moveLegToPos(Leg leg, float x, float y) {
 
     setAngle(leg.leftJoint.channel, angles[0]);
     setAngle(leg.rightJoint.channel, angles[1]);
-    delay(200);
+    delay(10);
 
     free(angles);
 }
@@ -92,3 +92,44 @@ void resetLeg(Leg leg) {
     setAngle(leg.rightJoint.channel, leg.rightJoint.offsetPos);
     delay(200);
 }
+
+// write traingle and cycloid gait...
+// trot gait (fl, br), (fr, bl)
+
+void moveLegLine(Leg leg, float startX, float endX, float startY, float endY) {
+    float x, y;
+
+    for (int i = 1; i <= 10; i++) {
+        x = startX + (i / 10.0f) * (endX - startX);
+        y = startY + (i / 10.0f) * (endY - startY);
+        moveLegToPos(leg, x, y);
+    }
+}
+
+void triangleGait(Leg leg, float stepLength, float stepHeight, float extendedYPos) {
+    // front ground position
+    float aPosX = -stepLength / 2;
+    float aPosY = extendedYPos;
+
+    // peak position
+    float bPosX = 0;
+    float bPosY = stepHeight;
+
+    // rear ground position
+    float cPosX = stepLength / 2;
+    float cPosY = extendedYPos;
+
+    // c -> b -> a -> c
+
+    // c -> b
+    // start in c pos
+    moveLegToPos(leg, cPosX, cPosY);
+    moveLegLine(leg, cPosX, bPosX, cPosY, bPosY);
+
+    // b -> a
+    moveLegLine(leg, bPosX, aPosX, bPosY, aPosY);
+
+    // a -> c
+    moveLegLine(leg, aPosX, cPosX, aPosY, cPosY);
+}
+

@@ -18,3 +18,5 @@ Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, 
 float* getAngles(Leg leg, float x, float y);
 void moveLegToPos(Leg leg, float x, float y);
 void resetLeg(Leg leg);
+void moveLegLine(Leg leg, float startX, float endX, float startY, float endY);
+void triangleGait(Leg leg, float stepLength, float stepHeight, float extendedYPos);
