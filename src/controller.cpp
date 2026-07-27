@@ -38,6 +38,14 @@ void updateController(Leg fL_leg) {
         if (controller->x()) {
            cycloidGate(fL_leg, 80.0f, 80.0f, 160.0f);
         }
+
+        if (controller->r2()) {
+            moveHip(fL_leg, 1);
+        }
+
+        if (controller->l2()) {
+            moveHip(fL_leg, -1);
+        }
     }
 
     delay(10);

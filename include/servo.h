@@ -18,5 +18,8 @@ extern const u16 maxPWM;
 extern const u8 minAngle;
 extern const u8 maxAngle;
 
+extern float* angles;
+
 void setupPca();
 void setAngle(u8 channel, float angle);
+float getCurrentAngle(u8 channel);

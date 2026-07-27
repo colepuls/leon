@@ -16,6 +16,8 @@ const u16 maxPWM = 2500;
 const u8 minAngle = 0;
 const u8 maxAngle = 180;
 
+float* angles;
+
 void setupPca() {
     channels = (u8*)malloc(sizeof(u8) * numServos);
     for (u8 i = 0; i < numServos; i++) { channels[i] = i; }
@@ -23,6 +25,9 @@ void setupPca() {
     Wire.begin(sdaPin, sclPin);
     pca.begin();
     pca.setPWMFreq(100);
+
+    angles = (float*)malloc(sizeof(float*) * numServos);
+
     delay(10);
 }
 
@@ -31,4 +36,10 @@ void setAngle(u8 channel, float angle) {
     u16 pulseUs = map(angle, minAngle, maxAngle, minPWM, maxPWM);
     u16 pwmVal = pulseUs * 4096 / 10000;
     pca.setPWM(channel, 0, pwmVal);
+
+    angles[channel] = angle;
+}
+
+float getCurrentAngle(u8 channel) {
+    return angles[channel];
 }

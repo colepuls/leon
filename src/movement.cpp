@@ -1,17 +1,20 @@
 #include "movement.h"
 
-Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, int leftJointDirection, int rightJointDirection, u8 leftJointChannel, u8 rightJointChannel, float motorSpacing, float upperLink, float lowerLink) {
+Leg initializeLeg(Leg leg, float leftJointOffsetPos, float rightJointOffsetPos, float hipJointOffsetPos, int leftJointDirection, int rightJointDirection, int hipJointDirection, u8 leftJointChannel, u8 rightJointChannel, u8 hipJointChannel, float motorSpacing, float upperLink, float lowerLink) {
     // offsetPos
     leg.leftJoint.offsetPos = leftJointOffsetPos;
     leg.rightJoint.offsetPos = rightJointOffsetPos;
+    leg.hipJoint.offsetPos = hipJointOffsetPos;
 
     // direction
     leg.leftJoint.direction = leftJointDirection;
     leg.rightJoint.direction = rightJointDirection;
+    leg.hipJoint.direction = hipJointDirection;
 
     // channel
     leg.leftJoint.channel = leftJointChannel;
     leg.rightJoint.channel = rightJointChannel;
+    leg.hipJoint.channel = hipJointChannel;
 
     // coordinate values
     leg.motorSpacing = motorSpacing;
@@ -152,6 +155,24 @@ void cycloidGate(Leg leg, float stepLength, float stepHeight, float groundY) {
         // move foot to position
         moveLegToPos(leg, x, y);
         delay(20);
+    }
+}
+
+void moveHip(Leg leg, int direction) {
+    float currentAngle = getCurrentAngle(leg.hipJoint.channel);
+    float angle;
+    int step = 5;
+
+    if (direction == 1) {
+        angle = currentAngle + step;
+        setAngle(leg.hipJoint.channel, angle);
+        delay(100);
+    }
+
+    if (direction == -1) {
+        angle = currentAngle - step;
+        setAngle(leg.hipJoint.channel, angle);
+        delay(100);
     }
 }
 
