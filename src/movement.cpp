@@ -133,3 +133,25 @@ void triangleGait(Leg leg, float stepLength, float stepHeight, float extendedYPo
     moveLegLine(leg, aPosX, cPosX, aPosY, cPosY);
 }
 
+void cycloidGate(Leg leg, float stepLength, float stepHeight, float groundY) {
+    float x, y;
+    float u;
+    float theta;
+
+    float rearX = -stepLength / 2.0f;
+
+    for (int i = 1; i <= 10; i++) {
+        // get angle
+        u = i / 10.0f;
+        theta = 2.0f * PI * u;
+
+        // get foot position
+        x = -(rearX + (stepLength / (2.0f * PI)) * (theta - sinf(theta)));
+        y = groundY - (stepHeight / 2.0f) * (1.0f - cosf(theta));
+
+        // move foot to position
+        moveLegToPos(leg, x, y);
+        delay(20);
+    }
+}
+

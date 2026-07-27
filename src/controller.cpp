@@ -32,11 +32,11 @@ void updateController(Leg fL_leg) {
         }
 
         if (controller->y()) {
-            resetLeg(fL_leg);
+            cycloidGate(fL_leg, 60.0f, 80.0f, 140.0f);
         }
 
         if (controller->x()) {
-            moveLegToPos(fL_leg, 0.0f, 150.0f);
+           cycloidGate(fL_leg, 80.0f, 80.0f, 160.0f);
         }
     }
 
